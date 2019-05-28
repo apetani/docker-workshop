@@ -1,6 +1,17 @@
-# Docker CLI
+# Docker Workshop
 
-## docker container
+## Hello world
+
+```sh
+docker run hello-world
+
+# /usr/share/nginx/html/index.html
+docker run --rm -p 8080:80 nginx
+```
+
+## Docker CLI
+
+### docker container
 
 Run docker container:
 
@@ -32,7 +43,7 @@ docker run --rm -it -d --name ubuntu1 ubuntu /bin/bash
 docker run --rm -it -d --name ubuntu2 ubuntu /bin/bash
 ```
 
-## docker image
+### docker image
 
 Tag existing image, save it to disk and load from file:
 
@@ -42,7 +53,7 @@ docker image save -o nginx.tar workshop/nginx
 docker image load --input=nginx.tar
 ```
 
-## docker network
+### docker network
 
 ping from busybox:
 
@@ -58,7 +69,7 @@ docker network connect workshop busybox2
 docker exec -it busybox2 ping busybox1
 ```
 
-## docker volume
+### docker volume
 
 anonymous volume vs. named volume vs. bind mounts:
 
@@ -82,7 +93,7 @@ docker run --rm \
   busybox sh -c "cd /usr/share/nginx/html && tar xvf /backup/backup.tar --strip 4"
 ```
 
-## node
+### node
 
 ```sh
 docker run --rm \
@@ -93,7 +104,7 @@ docker run --rm \
   node npm start
 ```
 
-## php-fpm
+### php-fpm
 
 ```sh
 docker run --rm -d \
@@ -107,7 +118,7 @@ docker run --rm -d -p 8080:80 \
   --name web --network workshop \
   nginx:1.15.12
 ```
-## react
+### react
 
 ```sh
 docker run \
@@ -117,4 +128,50 @@ docker run \
   -v node_modules:/app/node_modules \
   -w "/app" \
   node sh -c "npm i && npm start"
+```
+
+## Dockerfile
+
+### node
+
+```sh
+docker build -t apetani/node-app .
+
+docker run --rm -p 8080:3000 apetani/node-app
+```
+
+### php-fpm
+
+```sh
+docker build -t apetani/php-app -f php.Dockerfile .
+docker build -t apetani/nginx-app -f nginx.Dockerfile .
+
+docker network create workshop
+
+docker run --rm -d \
+  --name php --network workshop \
+  apetani/php-app
+
+docker run --rm -d -p 8080:80 \
+  --name web --network workshop \
+  apetani/nginx-app
+```
+
+### react
+
+```sh
+docker build -t apetani/react-app .
+
+docker run --rm -p 8080:80 apetani/react-app
+```
+
+## Docker Compose
+
+```sh
+# dev
+source .dev.env
+docker-compose -f docker-compose.dev.yml up
+
+source .prod.env
+docker-compose -f docker-compose.prod.yml up --build
 ```
