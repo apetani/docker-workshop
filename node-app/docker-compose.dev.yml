@@ -1,0 +1,22 @@
+version: "3.5"
+
+services:
+  react:
+    image: node:8.16.0
+    container_name: ${ENV}_workshop_node
+    ports:
+      - "8080:3000"
+    volumes:
+      - ./:/var/www
+      - node_modules:/var/www/node_modules
+    working_dir: /var/www
+    entrypoint: sh -c "npm i && npm start"
+    networks:
+      - workshop
+
+volumes:
+  node_modules:
+
+networks:
+  workshop:
+    name: ${ENV}_workshop_local

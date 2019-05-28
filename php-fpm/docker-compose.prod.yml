@@ -1,0 +1,25 @@
+version: "3.5"
+
+services:
+  web:
+    image: apetani/nginx-app:1.0
+    build:
+      context: ./
+      dockerfile: nginx.Dockerfile
+    container_name: ${ENV}_workshop_web
+    ports:
+      - "8080:80"
+    networks:
+      - workshop
+  php:
+    image: apetani/php-app:1.0
+    build:
+      context: ./
+      dockerfile: php.Dockerfile
+    container_name: ${ENV}_workshop_php
+    networks:
+      - workshop
+
+networks:
+  workshop:
+    name: ${ENV}_workshop_local

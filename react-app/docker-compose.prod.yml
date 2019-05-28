@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  react:
+    image: apetani/react-app:1.0
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: ${ENV}_workshop_react
+    ports:
+      - "8080:80"
+    networks:
+      - workshop
+
+networks:
+  workshop:
+    name: ${ENV}_workshop_local
