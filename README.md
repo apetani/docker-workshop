@@ -172,6 +172,7 @@ docker run --rm -p 8080:80 apetani/react-app
 source .dev.env
 docker-compose -f docker-compose.dev.yml up
 
+# prod
 source .prod.env
 docker-compose -f docker-compose.prod.yml up --build
 ```
