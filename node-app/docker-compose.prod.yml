@@ -9,6 +9,11 @@ services:
     container_name: ${ENV}_workshop_node
     ports:
       - "8080:3000"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     networks:
       - workshop
 

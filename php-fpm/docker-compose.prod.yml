@@ -9,6 +9,11 @@ services:
     container_name: ${ENV}_workshop_web
     ports:
       - "8080:80"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     networks:
       - workshop
   php:
@@ -17,6 +22,11 @@ services:
       context: ./
       dockerfile: php.Dockerfile
     container_name: ${ENV}_workshop_php
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 10m
     networks:
       - workshop
 
