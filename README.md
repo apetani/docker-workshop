@@ -118,6 +118,7 @@ docker run --rm -d -p 8080:80 \
   --name web --network workshop \
   nginx:1.15.12
 ```
+
 ### react
 
 ```sh
