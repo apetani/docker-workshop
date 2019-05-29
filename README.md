@@ -177,3 +177,24 @@ docker-compose -f docker-compose.dev.yml up
 source .prod.env
 docker-compose -f docker-compose.prod.yml up --build
 ```
+
+### Local docker registry using container
+
+```sh
+# run a local docker registry
+docker pull registry:2
+docker run --rm -it -p 5000:5000 registry:2 # --rm removes the container when done
+
+# tag image and push to local repository
+docker pull nginx:1.15
+docker tag nginx:latest localhost:5000/nginx:latest
+docker push localhost:5000/nginx
+
+# remove image and image tag
+docker rmi localhost:5000/nginx:1.15
+docker rmi nginx:1.15
+
+# check repositories
+curl http://localhost:5000/v2/_catalog
+curl http://localhost:5000/v2/nginx/tags/list
+```
