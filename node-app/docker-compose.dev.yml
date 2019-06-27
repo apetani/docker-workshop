@@ -1,6 +1,15 @@
 version: "3.5"
 
 services:
+  mongo:
+    image: mongo:4.2.0-rc1
+    container_name: ${ENV}_workshop_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - workshop
   react:
     image: node:8.16.0
     container_name: ${ENV}_workshop_node
@@ -16,6 +25,7 @@ services:
 
 volumes:
   node_modules:
+  mongo_data:
 
 networks:
   workshop:

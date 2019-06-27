@@ -18,7 +18,7 @@ Run docker container:
 ```sh
 # /bin/bash becomes PID 1
 docker run --rm -it ubuntu /bin/bash
-docker run --rm -it -d ubuntu /bin/bash
+docker run -it -d ubuntu /bin/bash
 
 # node is PID 1
 docker run -it --rm node
@@ -76,12 +76,14 @@ anonymous volume vs. named volume vs. bind mounts:
 ```sh
 docker run --rm -p 8080:80 --name nginx -v /usr/share/nginx/html nginx
 docker run --rm -p 8080:80 --name nginx -v nginx-data:/usr/share/nginx/html nginx
-docker run --rm -p 8080:80 --name nginx -v $(pwd)/data:/usr/share/nginx/html nginx
+docker run --rm -p 8080:80 --name nginx -v $(pwd)/index.html:/usr/share/nginx/html/index.html nginx
 ```
 
 backup and restore:
 
 ```sh
+docker run --rm -p 8080:80 --name nginx -v nginx-data:/usr/share/nginx/html nginx
+
 docker run --rm \
   --volumes-from nginx \
   -v $(pwd):/backup \
@@ -101,12 +103,14 @@ docker run --rm \
   -v $(pwd):/var/www \
   -v node_modules:/var/www/node_modules \
   -w "/var/www" \
-  node npm start
+  node sh -c "npm install && npm start"
 ```
 
 ### php-fpm
 
 ```sh
+docker network create workshop
+
 docker run --rm -d \
   -v $(pwd)/code:/code \
   --name php --network workshop \
@@ -122,8 +126,7 @@ docker run --rm -d -p 8080:80 \
 ### react
 
 ```sh
-docker run \
-  --rm \
+docker run --rm \
   -p 8080:3000 \
   -v $(pwd):/app \
   -v node_modules:/app/node_modules \
@@ -138,7 +141,7 @@ docker run \
 ```sh
 docker build -t apetani/node-app .
 
-docker run --rm -p 8080:3000 apetani/node-app
+docker run --rm -d apetani/node-app
 ```
 
 ### php-fpm
@@ -171,11 +174,11 @@ docker run --rm -p 8080:80 apetani/react-app
 ```sh
 # dev
 source .dev.env
-docker-compose -f docker-compose.dev.yml up
+docker-compose -f docker-compose.${ENV}.yml up
 
 # prod
 source .prod.env
-docker-compose -f docker-compose.prod.yml up --build
+docker-compose -f docker-compose.${ENV}.yml up --build
 ```
 
 ### Local docker registry using container

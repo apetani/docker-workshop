@@ -1,8 +1,15 @@
 version: "3.5"
 
 services:
+  mongo:
+    image: mongo:4.2.0-rc1
+    container_name: ${ENV}_workshop_mongo
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - workshop
   react:
-    image: apetani/node-app:1.0
+    image: apetani/node-app:latest
     build:
       context: ./
       dockerfile: Dockerfile
@@ -16,6 +23,9 @@ services:
         max-size: 10m
     networks:
       - workshop
+
+volumes:
+  mongo_data:
 
 networks:
   workshop:

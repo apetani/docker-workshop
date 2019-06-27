@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   web:
-    image: apetani/nginx-app:1.0
+    image: apetani/nginx-app:latest
     build:
       context: ./
       dockerfile: nginx.Dockerfile
@@ -17,7 +17,7 @@ services:
     networks:
       - workshop
   php:
-    image: apetani/php-app:1.0
+    image: apetani/php-app:latest
     build:
       context: ./
       dockerfile: php.Dockerfile

@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   react:
-    image: apetani/react-app:1.0
+    image: apetani/react-app:latest
     build:
       context: ./
       dockerfile: Dockerfile
