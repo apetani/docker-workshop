@@ -1,0 +1,36 @@
+version: "3.5"
+
+services:
+  mongo:
+    image: mongo:4.2.0-rc1
+    container_name: ${PROJ}_${ENV}_mongo_svc
+    volumes:
+      - mongo_datadb:/data/db
+      - mongo_configdb:/data/configdb
+    networks:
+      - workshop
+  node:
+    image: apetani/node-app:latest
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    container_name: ${PROJ}_${ENV}_node_svc
+    ports:
+      - ${NODE_PORT}:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: 10m
+    networks:
+      - workshop
+
+volumes:
+  mongo_datadb:
+    name: ${PROJ}_${ENV}_mongo_datadb
+  mongo_configdb:
+    name: ${PROJ}_${ENV}_mongo_configdb
+
+networks:
+  workshop:
+    name: ${PROJ}_${ENV}_workshop_local

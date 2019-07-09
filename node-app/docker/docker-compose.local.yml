@@ -1,0 +1,37 @@
+version: "3.5"
+
+services:
+  mongo:
+    image: mongo:4.2.0-rc1
+    container_name: ${PROJ}_${ENV}_mongo_svc
+    ports:
+      - ${MONGO_PORT}:27017
+    volumes:
+      - mongo_datadb:/data/db
+      - mongo_configdb:/data/configdb
+    networks:
+      - workshop
+  node:
+    image: node:8.16.0
+    container_name: ${PROJ}_${ENV}_node_svc
+    ports:
+      - ${NODE_PORT}:3000
+    volumes:
+      - ../:/var/www
+      - node_modules:/var/www/node_modules
+    working_dir: /var/www
+    entrypoint: sh -c "npm i && npm start"
+    networks:
+      - workshop
+
+volumes:
+  node_modules:
+    name: ${PROJ}_${ENV}_node_modules
+  mongo_datadb:
+    name: ${PROJ}_${ENV}_mongo_datadb
+  mongo_configdb:
+    name: ${PROJ}_${ENV}_mongo_configdb
+
+networks:
+  workshop:
+    name: ${PROJ}_${ENV}_workshop_local

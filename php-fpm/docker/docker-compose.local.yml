@@ -3,22 +3,22 @@ version: "3.5"
 services:
   web:
     image: nginx:1.15.12
-    container_name: ${ENV}_workshop_web
+    container_name: ${PROJ}_${ENV}_web_svc
     ports:
-      - "8080:80"
+      - "${NGINX_PORT}:80"
     volumes:
-      - ./code:/code
+      - ../code:/code
       - ./site.conf:/etc/nginx/conf.d/default.conf
     networks:
       - workshop
   php:
     image: php:7.3.5-fpm-stretch
-    container_name: ${ENV}_workshop_php
+    container_name: ${PROJ}_${ENV}_php_svc
     volumes:
-      - ./code:/code
+      - ../code:/code
     networks:
       - workshop
 
 networks:
   workshop:
-    name: ${ENV}_workshop_local
+    name: ${PROJ}_${ENV}_workshop_local

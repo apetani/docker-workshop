@@ -3,11 +3,11 @@ version: "3.5"
 services:
   react:
     image: node:8.16.0
-    container_name: ${ENV}_workshop_react
+    container_name: ${PROJ}_${ENV}_react_svc
     ports:
-      - "8080:3000"
+      - "${REACT_PORT}:3000"
     volumes:
-      - ./:/app
+      - ../:/app
       - node_modules:/app/node_modules
     working_dir: /app
     entrypoint: sh -c "npm i && npm start"
@@ -16,7 +16,8 @@ services:
 
 volumes:
   node_modules:
+    name: ${PROJ}_${ENV}_node_modules
 
 networks:
   workshop:
-    name: ${ENV}_workshop_local
+    name: ${PROJ}_${ENV}_workshop_local

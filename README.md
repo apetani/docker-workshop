@@ -21,7 +21,7 @@ docker run --rm -it ubuntu /bin/bash
 docker run -it -d ubuntu /bin/bash
 
 # node is PID 1
-docker run -it --rm node
+docker run --rm node
 ```
 
 Attach to running container:
@@ -74,9 +74,9 @@ docker exec -it busybox2 ping busybox1
 anonymous volume vs. named volume vs. bind mounts:
 
 ```sh
-docker run --rm -p 8080:80 --name nginx -v /usr/share/nginx/html nginx
-docker run --rm -p 8080:80 --name nginx -v nginx-data:/usr/share/nginx/html nginx
-docker run --rm -p 8080:80 --name nginx -v $(pwd)/index.html:/usr/share/nginx/html/index.html nginx
+docker run -d -p 8080:80 --name nginx -v /usr/share/nginx/html nginx
+docker run -d -p 8080:80 --name nginx -v nginx-data:/usr/share/nginx/html nginx
+docker run -d -p 8080:80 --name nginx -v $(pwd)/index.html:/usr/share/nginx/html/index.html nginx
 ```
 
 backup and restore:
@@ -173,23 +173,41 @@ docker run --rm -p 8080:80 apetani/react-app
 
 ```sh
 # dev
-source .dev.env
-docker-compose -f docker-compose.${ENV}.yml up
+source docker/config/.dev.env
+docker-compose -f docker/docker-compose.local.yml -p ${PROJ}_${ENV} up
+
+# stage
+source docker/config/.stage.env
+docker-compose -f docker/docker-compose.local.yml -p ${PROJ}_${ENV} up
 
 # prod
-source .prod.env
-docker-compose -f docker-compose.${ENV}.yml up --build
+source docker/config/.prod.env
+docker-compose -f docker/docker-compose.prod.yml -p ${PROJ}_${ENV} up --build
 ```
 
 ### Local docker registry using container
 
 ```sh
 # run a local docker registry
-docker pull registry:2
-docker run --rm -it -p 5000:5000 registry:2 # --rm removes the container when done
+docker run --rm -it -p 5000:5000 \
+  -v registry_volume:/var/lib/registry \
+  registry:2
+
+docker run \
+  --entrypoint htpasswd \
+  registry:2 -Bbn user pass > auth/htpasswd
+
+docker run --rm -it -p 5000:5000 \
+  -v $(pwd)/auth:/auth \
+  -e "REGISTRY_AUTH=htpasswd" \
+  -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+  registry:2
+
+docker login http://localhost:5000
 
 # tag image and push to local repository
-docker pull nginx:1.15
+docker pull nginx:latest
 docker tag nginx:latest localhost:5000/nginx:latest
 docker push localhost:5000/nginx
 
